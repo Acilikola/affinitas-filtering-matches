@@ -1,13 +1,13 @@
 package com.osmancan.affinitas.matchfilter.filteringmatches;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
-@Configuration
-@EnableAutoConfiguration
+import com.osmancan.affinitas.matchfilter.filteringmatches.config.AppConfig;
+
 @SpringBootApplication
+@Import(AppConfig.class)
 public class FilteringMatchesApplication {
 
 	public static void main(String[] args) {
