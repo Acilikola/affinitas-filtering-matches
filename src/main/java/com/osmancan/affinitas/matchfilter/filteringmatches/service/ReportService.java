@@ -1,5 +1,7 @@
 package com.osmancan.affinitas.matchfilter.filteringmatches.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +43,22 @@ public class ReportService {
 		specs.and(spec);
 	}
 	
+	// add filter for matches with compatibility score within specified range
+	public void addCompatibilityScoreFilter(Specs<Match> specs, BigDecimal compScoreBD, String mode) {
+		BigDecimal hundredBD = new BigDecimal(100);
+		BigDecimal checkValBD = compScoreBD.divide(hundredBD, 2, RoundingMode.HALF_UP);
+		Specification<Match> spec = null;
+		if(mode.equals("min")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.ge(root.get("compatibilityScore"), checkValBD);
+		} else if(mode.equals("max")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.le(root.get("compatibilityScore"), checkValBD);
+		}
+		if(spec != null)
+			specs.and(spec);
+	}
+	
 	//fetch matches based on filters or returns all when no filters are given
-	public List<Match> getByFilter(String hasPhoto, String inContact, String favourite) {
+	public List<Match> getByFilter(String hasPhoto, String inContact, String favourite, String compScoreMin, String compScoreMax) {
 		Specs<Match> specs = Specs.getSpecification();
 		
 		if (hasPhoto != null) {
@@ -58,6 +74,16 @@ public class ReportService {
 		if(favourite != null) {
 			boolean favouriteBoolean = Boolean.parseBoolean(favourite);
 			addFavouriteFilter(specs, favouriteBoolean);
+		}
+		
+		if(compScoreMin != null) {
+			BigDecimal compScoreMinBD = new BigDecimal(compScoreMin);
+			addCompatibilityScoreFilter(specs, compScoreMinBD, "min");
+		}
+		
+		if(compScoreMax != null) {
+			BigDecimal compScoreMaxBD = new BigDecimal(compScoreMax);
+			addCompatibilityScoreFilter(specs, compScoreMaxBD, "max");
 		}
 
 		return matchRepository.findAll(specs);

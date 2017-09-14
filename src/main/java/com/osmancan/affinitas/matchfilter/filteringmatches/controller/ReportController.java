@@ -41,6 +41,8 @@ public class ReportController {
 		String hasPhoto = params.get("hasPhoto");
 		String inContact = params.get("inContact");
 		String favourite = params.get("favourite");
-		return reportService.getByFilter(hasPhoto, inContact, favourite);
+		String compScoreMin = params.get("compScoreMin");
+		String compScoreMax = params.get("compScoreMax");
+		return reportService.getByFilter(hasPhoto, inContact, favourite, compScoreMin, compScoreMax);
 	}
 }
