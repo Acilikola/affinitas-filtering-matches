@@ -21,20 +21,32 @@ public class ReportService {
 		return matchRepository.findAll();
 	}
 	
-	//add filter for matches with/without photos
+	// add filter for matches with/without photos
 	public void addHasPhotoFilter(Specs<Match> specs, boolean hasPhotoBoolean) {
-		Specification<Match> spec = (root, criteriaQuery, criteriaBuilder)
-				-> hasPhotoBoolean ? criteriaBuilder.isNotNull(root.get("mainPhoto")) : criteriaBuilder.isNull(root.get("mainPhoto"));
+		Specification<Match> spec = (root, criteriaQuery, criteriaBuilder) -> hasPhotoBoolean ? 
+				criteriaBuilder.isNotNull(root.get("mainPhoto")) : criteriaBuilder.isNull(root.get("mainPhoto"));
+		specs.and(spec);
+	}
+
+	// add filter for matches in/not in contacts
+	public void addInContactFilter(Specs<Match> specs, boolean inContactBoolean) {
+		Specification<Match> spec = (root, criteriaQuery, criteriaBuilder) -> inContactBoolean ? 
+				criteriaBuilder.gt(root.get("contactsExchanged"), 0) : criteriaBuilder.le(root.get("contactsExchanged"), 0);
 		specs.and(spec);
 	}
 	
 	//fetch matches based on filters or returns all when no filters are given
-	public List<Match> getByFilter(String hasPhoto) {
-
+	public List<Match> getByFilter(String hasPhoto, String inContact) {
 		Specs<Match> specs = Specs.getSpecification();
+		
 		if (hasPhoto != null) {
 			boolean hasPhotoBoolean = Boolean.parseBoolean(hasPhoto);
 			addHasPhotoFilter(specs, hasPhotoBoolean);
+		}
+		
+		if(inContact != null) {
+			boolean inContactBoolean = Boolean.parseBoolean(inContact);
+			addInContactFilter(specs, inContactBoolean);
 		}
 
 		return matchRepository.findAll(specs);

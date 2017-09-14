@@ -39,6 +39,7 @@ public class ReportController {
 	@RequestMapping(path = "/report/matches", method = RequestMethod.GET)
 	public List<Match> getByFilter(@RequestParam Map<String, String> params) {
 		String hasPhoto = params.get("hasPhoto");
-		return reportService.getByFilter(hasPhoto);
+		String inContact = params.get("inContact");
+		return reportService.getByFilter(hasPhoto, inContact);
 	}
 }
