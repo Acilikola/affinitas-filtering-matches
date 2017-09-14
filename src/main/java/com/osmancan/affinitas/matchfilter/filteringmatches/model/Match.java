@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -44,6 +45,7 @@ public class Match {
 	// @JoinColumn(name = "name")
 	// private City city;
 
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	@JsonProperty(value = "main_photo")
 	@Column(name = "main_photo")
 	private String mainPhoto;
