@@ -29,4 +29,15 @@ public class ReportIT {
 		RestAssured.given().parameters("hasPhoto", false).then().expect().body(not(containsString("main_photo"))).and()
 				.body("size()", is(3)).when().get("/report/matches");
 	}
+	
+	// tests that the inContact filter is working properly (incontact = 12 matches, not incontact = 13)
+	@Test
+	public void inContactFilterTest() {
+		RestAssured.given().parameters("inContact", true).then().expect().body("findAll{it.contacts_exchanged > 0}.size()", is(12))
+		.when().get("/report/matches");
+		RestAssured.given().parameters("inContact", false).then().expect().body("findAll{it.contacts_exchanged == 0}.size()", is(13))
+		.when().get("/report/matches");
+	}
+	
+	
 }
