@@ -48,4 +48,15 @@ public class ReportIT {
 		.when().get("/report/matches");
 	}
 	
+	// tests that the compatibilityScore filter is working properly
+	@Test
+	public void compatibilityScoreFilterTest() {
+		RestAssured.given().parameters("compScoreMin", 87).then().expect().body("findAll{it.compatibility_score >= 0.87}.size()", is(18))
+		.when().get("/report/matches");
+		RestAssured.given().parameters("compScoreMax", 80).then().expect().body("findAll{it.compatibility_score <= 0.8}.size()", is(5))
+		.when().get("/report/matches");
+		RestAssured.given().parameters("compScoreMin", 30, "compScoreMax", 55).then().expect()
+		.body("compatibility_score", everyItem(allOf(greaterThan(0.3f),lessThan(0.55f)))).when().get("/report/matches");
+	}
+	
 }
