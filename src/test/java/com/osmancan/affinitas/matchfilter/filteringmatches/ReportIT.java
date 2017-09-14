@@ -39,5 +39,13 @@ public class ReportIT {
 		.when().get("/report/matches");
 	}
 	
+	// tests that the favourite filter is working properly (favourite = 6 matches, not favourite = 19)
+	@Test
+	public void favouriteFilterTest() {
+		RestAssured.given().parameters("favourite", true).then().expect().body("findAll{it.favourite}.size()", is(6))
+		.when().get("/report/matches");
+		RestAssured.given().parameters("favourite", false).then().expect().body("findAll{!it.favourite}.size()", is(19))
+		.when().get("/report/matches");
+	}
 	
 }
