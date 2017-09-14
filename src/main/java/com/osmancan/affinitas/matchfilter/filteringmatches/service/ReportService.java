@@ -35,8 +35,14 @@ public class ReportService {
 		specs.and(spec);
 	}
 	
+	// add filter for matches favourite/not favourite
+	public void addFavouriteFilter(Specs<Match> specs, boolean favouriteBoolean) {
+		Specification<Match> spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("favourite"), favouriteBoolean);
+		specs.and(spec);
+	}
+	
 	//fetch matches based on filters or returns all when no filters are given
-	public List<Match> getByFilter(String hasPhoto, String inContact) {
+	public List<Match> getByFilter(String hasPhoto, String inContact, String favourite) {
 		Specs<Match> specs = Specs.getSpecification();
 		
 		if (hasPhoto != null) {
@@ -47,6 +53,11 @@ public class ReportService {
 		if(inContact != null) {
 			boolean inContactBoolean = Boolean.parseBoolean(inContact);
 			addInContactFilter(specs, inContactBoolean);
+		}
+		
+		if(favourite != null) {
+			boolean favouriteBoolean = Boolean.parseBoolean(favourite);
+			addFavouriteFilter(specs, favouriteBoolean);
 		}
 
 		return matchRepository.findAll(specs);

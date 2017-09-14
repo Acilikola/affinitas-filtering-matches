@@ -40,6 +40,7 @@ public class ReportController {
 	public List<Match> getByFilter(@RequestParam Map<String, String> params) {
 		String hasPhoto = params.get("hasPhoto");
 		String inContact = params.get("inContact");
-		return reportService.getByFilter(hasPhoto, inContact);
+		String favourite = params.get("favourite");
+		return reportService.getByFilter(hasPhoto, inContact, favourite);
 	}
 }
