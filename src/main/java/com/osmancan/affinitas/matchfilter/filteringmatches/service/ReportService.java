@@ -69,9 +69,21 @@ public class ReportService {
 			specs.and(spec);
 	}
 	
+	// add filter for matches with height within specified range
+	public void addHeightFilter(Specs<Match> specs, Integer height, String mode) {
+		Specification<Match> spec = null;
+		if(mode.equals("min")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.ge(root.get("heightInCm"), height);
+		} else if(mode.equals("max")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.le(root.get("heightInCm"), height);
+		}
+		if(spec != null)
+			specs.and(spec);
+	}
+	
 	//fetch matches based on filters or returns all when no filters are given
 	public List<Match> getByFilter(String hasPhoto, String inContact, String favourite, String compScoreMin, String compScoreMax,
-			String ageMin, String ageMax) {
+			String ageMin, String ageMax, String heightMin, String heightMax) {
 		Specs<Match> specs = Specs.getSpecification();
 		
 		if (hasPhoto != null) {
@@ -107,6 +119,16 @@ public class ReportService {
 		if(ageMax != null) {
 			Integer ageMaxInt = Integer.parseInt(ageMax);
 			addAgeFilter(specs, ageMaxInt, "max");
+		}
+		
+		if(heightMin != null) {
+			Integer heightMinInt = Integer.parseInt(heightMin);
+			addHeightFilter(specs, heightMinInt, "min");
+		}
+		
+		if(heightMax != null) {
+			Integer heightMaxInt = Integer.parseInt(heightMax);
+			addHeightFilter(specs, heightMaxInt, "max");
 		}
 
 		return matchRepository.findAll(specs);
