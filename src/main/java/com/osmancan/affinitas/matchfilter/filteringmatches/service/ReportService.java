@@ -57,8 +57,21 @@ public class ReportService {
 			specs.and(spec);
 	}
 	
+	// add filter for matches with age within specified range
+	public void addAgeFilter(Specs<Match> specs, Integer age, String mode) {
+		Specification<Match> spec = null;
+		if(mode.equals("min")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.ge(root.get("age"), age);
+		} else if(mode.equals("max")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.le(root.get("age"), age);
+		}
+		if(spec != null)
+			specs.and(spec);
+	}
+	
 	//fetch matches based on filters or returns all when no filters are given
-	public List<Match> getByFilter(String hasPhoto, String inContact, String favourite, String compScoreMin, String compScoreMax) {
+	public List<Match> getByFilter(String hasPhoto, String inContact, String favourite, String compScoreMin, String compScoreMax,
+			String ageMin, String ageMax) {
 		Specs<Match> specs = Specs.getSpecification();
 		
 		if (hasPhoto != null) {
@@ -84,6 +97,16 @@ public class ReportService {
 		if(compScoreMax != null) {
 			BigDecimal compScoreMaxBD = new BigDecimal(compScoreMax);
 			addCompatibilityScoreFilter(specs, compScoreMaxBD, "max");
+		}
+		
+		if(ageMin != null) {
+			Integer ageMinInt = Integer.parseInt(ageMin);
+			addAgeFilter(specs, ageMinInt, "min");
+		}
+		
+		if(ageMax != null) {
+			Integer ageMaxInt = Integer.parseInt(ageMax);
+			addAgeFilter(specs, ageMaxInt, "max");
 		}
 
 		return matchRepository.findAll(specs);

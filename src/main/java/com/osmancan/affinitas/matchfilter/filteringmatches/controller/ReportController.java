@@ -43,6 +43,8 @@ public class ReportController {
 		String favourite = params.get("favourite");
 		String compScoreMin = params.get("compScoreMin");
 		String compScoreMax = params.get("compScoreMax");
-		return reportService.getByFilter(hasPhoto, inContact, favourite, compScoreMin, compScoreMax);
+		String ageMin = params.get("ageMin");
+		String ageMax = params.get("ageMax");
+		return reportService.getByFilter(hasPhoto, inContact, favourite, compScoreMin, compScoreMax, ageMin, ageMax);
 	}
 }
