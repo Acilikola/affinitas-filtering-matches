@@ -56,7 +56,18 @@ public class ReportIT {
 		RestAssured.given().parameters("compScoreMax", 80).then().expect().body("findAll{it.compatibility_score <= 0.8}.size()", is(5))
 		.when().get("/report/matches");
 		RestAssured.given().parameters("compScoreMin", 30, "compScoreMax", 55).then().expect()
-		.body("compatibility_score", everyItem(allOf(greaterThan(0.3f),lessThan(0.55f)))).when().get("/report/matches");
+		.body("compatibility_score", everyItem(allOf(greaterThanOrEqualTo(0.3f),lessThanOrEqualTo(0.55f)))).when().get("/report/matches");
+	}
+	
+	// tests that the age filter is working properly
+	@Test
+	public void ageFilterTest() {
+		RestAssured.given().parameters("ageMin", 40).then().expect().body("findAll{it.age >= 40}.size()", is(14))
+		.when().get("/report/matches");
+		RestAssured.given().parameters("ageMax", 42).then().expect().body("findAll{it.age <= 42}.size()", is(17))
+		.when().get("/report/matches");
+		RestAssured.given().parameters("ageMin", 18, "ageMax", 37).then().expect()
+		.body("age", everyItem(allOf(greaterThanOrEqualTo(18),lessThanOrEqualTo(37)))).when().get("/report/matches");
 	}
 	
 }
