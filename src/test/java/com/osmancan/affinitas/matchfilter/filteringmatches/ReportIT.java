@@ -70,4 +70,15 @@ public class ReportIT {
 		.body("age", everyItem(allOf(greaterThanOrEqualTo(18),lessThanOrEqualTo(37)))).when().get("/report/matches");
 	}
 	
+	// tests that the height filter is working properly
+	@Test
+	public void heightFilterTest() {
+		RestAssured.given().parameters("heightMin", 170).then().expect().body("findAll{it.height_in_cm >= 170}.size()", is(5))
+		.when().get("/report/matches");
+		RestAssured.given().parameters("heightMax", 150).then().expect().body("findAll{it.height_in_cm <= 150}.size()", is(7))
+		.when().get("/report/matches");
+		RestAssured.given().parameters("heightMin", 160, "heightMax", 172).then().expect()
+		.body("height_in_cm", everyItem(allOf(greaterThanOrEqualTo(160),lessThanOrEqualTo(172)))).when().get("/report/matches");
+	}
+	
 }
