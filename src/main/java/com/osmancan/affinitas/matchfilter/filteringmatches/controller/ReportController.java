@@ -19,22 +19,26 @@ public class ReportController {
 	@Autowired
 	private ReportService reportService;
 
+	public Match loggedInMatch = null;
+
 	@RequestMapping(path = "/report", method = RequestMethod.GET)
 	public String reportHomePage() {
+		if (loggedInMatch == null) {
+			loggedInMatch = reportService.getRandomLoginMatch();
+		}
 		return "matchreport.html";
 	}
 
-	//obsolete --> when no params passed to getByFilter, returns same result with getAllMatches
+	// obsolete --> when no params passed to getByFilter, returns same result with getAllMatches
 	/*
-	@ResponseBody
-	@RequestMapping(path = "/report/matches", method = RequestMethod.GET)
-	public List<Match> getAllMatches() {
-		 return reportService.getAllMatches();
-	}
-	*/
-	
-	//no params => returns all matches
-	//with params => applies specified filters (allows multiple)
+	 * @ResponseBody
+	 * 
+	 * @RequestMapping(path = "/report/matches", method = RequestMethod.GET) public List<Match> getAllMatches() { return
+	 * reportService.getAllMatches(); }
+	 */
+
+	// no params => returns all matches
+	// with params => applies specified filters (allows multiple)
 	@ResponseBody
 	@RequestMapping(path = "/report/matches", method = RequestMethod.GET)
 	public List<Match> getByFilter(@RequestParam Map<String, String> params) {
@@ -47,6 +51,8 @@ public class ReportController {
 		String ageMax = params.get("ageMax");
 		String heightMin = params.get("heightMin");
 		String heightMax = params.get("heightMax");
-		return reportService.getByFilter(hasPhoto, inContact, favourite, compScoreMin, compScoreMax, ageMin, ageMax, heightMin, heightMax);
+		String distanceMax = params.get("distanceMax");
+		return reportService.getByFilter(loggedInMatch, hasPhoto, inContact, favourite, compScoreMin, compScoreMax, ageMin, ageMax,
+				heightMin, heightMax, distanceMax);
 	}
 }

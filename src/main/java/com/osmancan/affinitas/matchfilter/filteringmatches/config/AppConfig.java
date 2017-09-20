@@ -43,7 +43,7 @@ public class AppConfig {
 		JsonNode array = mapper.readTree(getClass().getClassLoader().getResource("matches.json")).get("matches");
 		
 		List<Match> matches = mapper.readValue(array.toString(), new TypeReference<List<Match>>() {});
-		List<City> cities = matches.stream().map(Match::getCity).collect(Collectors.toList());
+		List<City> cities = matches.stream().map(Match::getCity).distinct().collect(Collectors.toList());
 		
 		cityRepository.save(cities);
 		matchRepository.save(matches);

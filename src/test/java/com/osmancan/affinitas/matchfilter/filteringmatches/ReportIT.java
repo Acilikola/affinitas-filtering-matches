@@ -1,10 +1,22 @@
 package com.osmancan.affinitas.matchfilter.filteringmatches;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import org.junit.Test;
 
 import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.Response;
+import com.osmancan.affinitas.matchfilter.filteringmatches.model.City;
+import com.osmancan.affinitas.matchfilter.filteringmatches.model.Match;
+import com.osmancan.affinitas.matchfilter.filteringmatches.util.MathUtil;
 
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 //Maven Failsafe Integration and Unit Tests for Report Page
 public class ReportIT {
@@ -79,6 +91,42 @@ public class ReportIT {
 		.when().get("/report/matches");
 		RestAssured.given().parameters("heightMin", 160, "heightMax", 172).then().expect()
 		.body("height_in_cm", everyItem(allOf(greaterThanOrEqualTo(160),lessThanOrEqualTo(172)))).when().get("/report/matches");
+	}
+	
+	// tests that the distance filter is working properly
+	// (dummy loginCity = Leeds, cities with distance less than 251km: "Leeds", "Solihull", "Swindon", "Oxford", "Harlow")
+	// (dummy loginCity2 = Leeds, cities with distance <30: "Leeds")
+	// (dummy loginCity3 = Leeds, cities with distance >300: "Eastbourne", "Salisbury", "Weymouth", "Bournemouth", "Plymouth", "Inverness",
+	// "Aberdeen", "Londonderry")
+	@Test
+	public void distanceFilterTest() {
+		City city1 = new City();
+		city1.setName("Leeds");
+		city1.setLat(new BigDecimal(53.801277));
+		city1.setLon(new BigDecimal(-1.548567));
+		Integer distance = 251;
+		
+		Predicate<Match> isCloseEnough = e -> MathUtil.calculateDistanceBetweenCitiesInKm(city1, e.getCity()) <= (distance == 0 ? 29 : distance);
+		Response response = RestAssured.get("/report/matches");
+		List<Match> returnedMatches = Arrays.asList(response.getBody().as(Match[].class));
+		Set<String> matchingCities = returnedMatches.stream().filter(isCloseEnough).map(Match::getCity).map(City::getName).collect(Collectors.toSet());
+		assertTrue(matchingCities.containsAll(Arrays.asList("Leeds", "Solihull", "Swindon", "Oxford", "Harlow"))
+				&& !matchingCities.contains("London"));
+		
+		Integer distance2 = 0;
+		isCloseEnough = e -> MathUtil.calculateDistanceBetweenCitiesInKm(city1, e.getCity()) <= (distance2 == 0 ? 29 : distance2);
+		response = RestAssured.get("/report/matches");
+		returnedMatches = Arrays.asList(response.getBody().as(Match[].class));
+		matchingCities = returnedMatches.stream().filter(isCloseEnough).map(Match::getCity).map(City::getName).collect(Collectors.toSet());
+		assertTrue(matchingCities.size() == 1 && matchingCities.contains("Leeds"));
+		
+		Integer distance3 = -1;
+		Predicate<Match> isFarEnough = e -> MathUtil.calculateDistanceBetweenCitiesInKm(city1, e.getCity()) > 300;
+		response = RestAssured.get("/report/matches");
+		returnedMatches = Arrays.asList(response.getBody().as(Match[].class));
+		matchingCities = returnedMatches.stream().filter(distance3 == -1 ? isFarEnough : isCloseEnough).map(Match::getCity).map(City::getName).collect(Collectors.toSet());
+		assertTrue(matchingCities.containsAll(Arrays.asList("Eastbourne", "Salisbury", "Weymouth", "Bournemouth", "Plymouth", "Inverness",
+				"Aberdeen", "Londonderry"))	&& !matchingCities.contains("Leeds"));
 	}
 	
 }
