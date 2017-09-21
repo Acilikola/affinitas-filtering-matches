@@ -80,14 +80,10 @@ public class ReportService {
 	// add filter for matches with age within specified range
 	public void addAgeFilter(Specs<Match> specs, Integer age, String mode) {
 		Specification<Match> spec = null;
-		if(age == 999) {
-			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.gt(root.get("age"), UPPER_BOUND_AGE);
-		} else {
-			if (mode.equals("min")) {
-				spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.ge(root.get("age"), age);
-			} else if (mode.equals("max")) {
-				spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.le(root.get("age"), age);
-			}
+		if (mode.equals("min")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.ge(root.get("age"), age == 999 ? UPPER_BOUND_AGE+1 : age);
+		} else if (mode.equals("max")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.le(root.get("age"), age);
 		}
 		if (spec != null)
 			specs.and(spec);
@@ -96,14 +92,10 @@ public class ReportService {
 	// add filter for matches with height within specified range
 	public void addHeightFilter(Specs<Match> specs, Integer height, String mode) {
 		Specification<Match> spec = null;
-		if(height == 999) {
-			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.ge(root.get("heightInCm"), UPPER_BOUND_HEIGHT);
-		} else {
-			if (mode.equals("min")) {
-				spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.ge(root.get("heightInCm"), height);
-			} else if (mode.equals("max")) {
-				spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.le(root.get("heightInCm"), height);
-			}
+		if (mode.equals("min")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.ge(root.get("heightInCm"), height == 999 ? UPPER_BOUND_HEIGHT+1 : height);
+		} else if (mode.equals("max")) {
+			spec = (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.le(root.get("heightInCm"), height);
 		}
 		if (spec != null)
 			specs.and(spec);

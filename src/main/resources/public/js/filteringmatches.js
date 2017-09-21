@@ -107,9 +107,9 @@ var FilterMatches = React.createClass({
 			this.setState({distanceMaxOpt: changeVal, filters});
 			return;
 		}
-		if((name === "ageMin" || name === "ageMax") && value > 95)
+		if((name === "ageMin" && value > 95)
 			changeVal = 999;
-		else if((name === "heightMin" || name === "heightMax") && value > 210)
+		else if((name === "heightMin" && value > 210)
 			changeVal = 999;
 		filters[name] = changeVal;
 		this.setState({
