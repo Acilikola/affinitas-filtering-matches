@@ -116,47 +116,47 @@ public class ReportService {
 		List<Match> retList = new ArrayList<Match>();
 		Specs<Match> specs = Specs.getSpecification();
 
-		if (hasPhoto != null) {
+		if (hasPhoto != null && !hasPhoto.isEmpty()) {
 			boolean hasPhotoBoolean = Boolean.parseBoolean(hasPhoto);
 			addHasPhotoFilter(specs, hasPhotoBoolean);
 		}
 
-		if (inContact != null) {
+		if (inContact != null && !inContact.isEmpty()) {
 			boolean inContactBoolean = Boolean.parseBoolean(inContact);
 			addInContactFilter(specs, inContactBoolean);
 		}
 
-		if (favourite != null) {
+		if (favourite != null && !favourite.isEmpty()) {
 			boolean favouriteBoolean = Boolean.parseBoolean(favourite);
 			addFavouriteFilter(specs, favouriteBoolean);
 		}
 
-		if (compScoreMin != null) {
+		if (compScoreMin != null && !compScoreMin.isEmpty()) {
 			BigDecimal compScoreMinBD = new BigDecimal(compScoreMin);
 			addCompatibilityScoreFilter(specs, compScoreMinBD, "min");
 		}
 
-		if (compScoreMax != null) {
+		if (compScoreMax != null && !compScoreMax.isEmpty()) {
 			BigDecimal compScoreMaxBD = new BigDecimal(compScoreMax);
 			addCompatibilityScoreFilter(specs, compScoreMaxBD, "max");
 		}
 
-		if (ageMin != null) {
+		if (ageMin != null && !ageMin.isEmpty()) {
 			Integer ageMinInt = Integer.parseInt(ageMin);
 			addAgeFilter(specs, ageMinInt, "min");
 		}
 
-		if (ageMax != null) {
+		if (ageMax != null && !ageMax.isEmpty()) {
 			Integer ageMaxInt = Integer.parseInt(ageMax);
 			addAgeFilter(specs, ageMaxInt, "max");
 		}
 
-		if (heightMin != null) {
+		if (heightMin != null && !heightMin.isEmpty()) {
 			Integer heightMinInt = Integer.parseInt(heightMin);
 			addHeightFilter(specs, heightMinInt, "min");
 		}
 
-		if (heightMax != null) {
+		if (heightMax != null && !heightMax.isEmpty()) {
 			Integer heightMaxInt = Integer.parseInt(heightMax);
 			addHeightFilter(specs, heightMaxInt, "max");
 		}
@@ -170,7 +170,7 @@ public class ReportService {
 
 		retList = matchRepository.findAll(specs);
 		
-		if (distanceMax != null) {
+		if (distanceMax != null && !distanceMax.isEmpty()) {
 			Integer distanceMaxInt = Integer.parseInt(distanceMax);
 			retList = useDistanceFilter(loggedInMatch, retList, distanceMaxInt);
 		}

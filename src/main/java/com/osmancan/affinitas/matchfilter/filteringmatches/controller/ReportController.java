@@ -55,4 +55,13 @@ public class ReportController {
 		return reportService.getByFilter(loggedInMatch, hasPhoto, inContact, favourite, compScoreMin, compScoreMax, ageMin, ageMax,
 				heightMin, heightMax, distanceMax);
 	}
+	
+	@ResponseBody
+	@RequestMapping(path = "/report/loggedin", method = RequestMethod.GET)
+	public Match getLoggedInUser() {
+		if (loggedInMatch == null) {
+			loggedInMatch = reportService.getRandomLoginMatch();
+		}
+		return loggedInMatch;
+	}
 }

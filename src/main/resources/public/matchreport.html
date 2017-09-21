@@ -8,17 +8,16 @@
 <script src="https://fb.me/react-dom-15.0.1.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+	img {width:100px;height:100px;}
+</style>
 </head>
 <body>
-	<h1>Matching Profiles Report</h1>
-	<div id="mptable"></div>
-	<script type="text/babel">
-		var MatchingProfileTable = React.createClass({
-			render: function() {
-				return (<div>matchingprofile table</div>);
-			}
-		});
-		ReactDOM.render(<MatchingProfileTable matches={MATCHES} />, document.getElementById('mptable'));
-	</script>
+	<div class="container">
+		<div id='loginmatch'></div>
+		<div id='filtermatches'></div>
+	</div>
+	
+	<script type="text/babel" src="/js/filteringmatches.js"></script>
 </body>
 </html>
