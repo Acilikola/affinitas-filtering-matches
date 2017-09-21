@@ -139,6 +139,7 @@ var FilterMatches = React.createClass({
 //		console.log("FilterMatches.render called");
 		return (
 			<div>
+			<a className="btn btn-danger" href="./report">RESET FILTERS</a>
 			<h1>Matching Profiles Report</h1>
 			<form onSubmit={this.handleSubmit}>
 				<label>
@@ -205,7 +206,7 @@ var FilterMatches = React.createClass({
 				<br />
 				<input className="btn btn-primary" type="submit" value="Filter" />
 			</form>
-			<br />
+			<hr />
 			<MatchingProfileTable matchingprofiles={this.state.matchingprofiles}></MatchingProfileTable>
 			</div>
 		);
