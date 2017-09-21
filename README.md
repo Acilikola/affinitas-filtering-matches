@@ -42,7 +42,10 @@ _!!No additional setup is required except Maven!!_
 > **DESIGN CHOICES & ASSUMPTIONS** Some of the filters threw me off in terms of logic. For example: the boolean filters.
 > "In Contact" filter is asked to be implemented in a boolean manner, with true or false setting. 
 > However, I would have actually designed it as a single choice filter between "Yes / No / Don't Care" to ensure that the user can search for matches who are "definitely in contact (previous connection) / definitely not in contact (someone new) / don't care whether new or previously met (either)".
+
 > Apart from that, I have taken the liberty of designing the special cases of certain filters, namely >95 years for AgeFilter & >210cm for HeightFilter & <30km and >300km for DistanceFilter.
 > As I said, some of them didn't make sense to me such as searching for someone older than 95 or someone who is far far away. While implementing them, I have made special non-intuitive design choices since I really don't like front end development and especially css and toggles/hide shows.
 >  * For >95 age --> the user can input any number bigger than 95 to "min" field
 >  * For >210 cm --> the user can input any number bigger than 210 to "min" field
+
+> Lastly, I have included a hideous "RESET FILTERS" button to the top of the filter form to effectively clear out all fields and reset all previous set filters. I have decided to implement this in order to compensate for the boolean filters mainly, since they can never be set to the initial "Don't Care" mode afterwards.
